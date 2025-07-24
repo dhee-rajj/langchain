@@ -1,6 +1,6 @@
 from langchain_openai import ChatOpenAI
 from langchain.prompts import PromptTemplate
-from langchain_core.output_parsers import StrOutputParser
+from langchain_core.output_parsers import StrOutputParser, JsonOutputParser
 import streamlit as st
 from dotenv import load_dotenv
 import os
@@ -23,21 +23,25 @@ topic_prompt = PromptTemplate(
 )
 
 speech_prompt = PromptTemplate(
-    input_variables=["title"],
+    input_variables=["title", "emotion"],
     template="""You need to write a powerful speech of 350 words
         for the following title: {title}
+        with the emotion {emotion}
+        format the output with 2 keys: 'title', 'speech' and fill them
+        with the respective values
         """
 )
 
-first_chain = topic_prompt | llm | StrOutputParser() #| (lambda title: (st.write(title), title)[1])
-second_chain = speech_prompt | llm
-final_chain = first_chain | second_chain
+first_chain = topic_prompt | llm | StrOutputParser()
+second_chain = speech_prompt | llm | JsonOutputParser()
+final_chain = first_chain | (lambda title: {"title": title, "emotion": emotion}) | second_chain
 
 st.title("Speech Generator")
 
 topic = st.text_input("Enter the topic")
+emotion = st.text_input("Enter the emotion")
 
-if topic:
+if topic and emotion:
     response = final_chain.invoke({"topic": topic})
-    st.write(response.content)
+    st.write(response)
 

@@ -8,10 +8,17 @@ import os
 load_dotenv(dotenv_path="../.env")
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+XAI_API_KEY = os.getenv("XAI_API_KEY")
 
-llm = ChatOpenAI(api_key=OPENAI_API_KEY, 
+openai_llm = ChatOpenAI(api_key=OPENAI_API_KEY, 
                  base_url="https://models.github.ai/inference",
-                model = "openai/gpt-4o")
+                 model = "openai/gpt-4o"
+                )
+
+xai_llm = ChatOpenAI(api_key=XAI_API_KEY, 
+                 base_url="https://models.github.ai/inference",
+                 model = "xai/grok-3"
+                )
 
 topic_prompt = PromptTemplate(
     input_variables=["topic"],
@@ -29,8 +36,8 @@ speech_prompt = PromptTemplate(
         """
 )
 
-first_chain = topic_prompt | llm | StrOutputParser() #| (lambda title: (st.write(title), title)[1])
-second_chain = speech_prompt | llm
+first_chain = topic_prompt | openai_llm | StrOutputParser() #| (lambda title: (st.write(title), title)[1])
+second_chain = first_chain | xai_llm
 final_chain = first_chain | second_chain
 
 st.title("Speech Generator")
