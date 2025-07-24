@@ -10,7 +10,7 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 llm = ChatOpenAI(api_key=OPENAI_API_KEY, 
                  base_url="https://models.github.ai/inference",
-                model = "openai/gpt-4.1")
+                model = "openai/gpt-4o")
 prompt_template = PromptTemplate(
     input_variables=["country", "no_of_paras", "language"],
     template="""You are an expert in traditional cuisines.You provide 

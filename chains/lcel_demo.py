@@ -4,7 +4,7 @@ import streamlit as st
 from dotenv import load_dotenv
 import os
 
-load_dotenv()
+load_dotenv(dotenv_path="../.env")
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
@@ -24,6 +24,8 @@ prompt_template = PromptTemplate(
         """
 )
 
+chain = prompt_template | llm
+
 st.title("City Guide")
 
 city = st.text_input("Enter the city name")
@@ -32,9 +34,11 @@ language = st.text_input("Enter the languge")
 budget = st.selectbox("Select the budget", ["low", "medium", "high"])
 
 if city and month and language and budget:
-    response = llm.invoke(prompt_template.format(city=city,
-                                                 month=month,
-                                                 language=language,
-                                                 budget=budget))
+    response = chain.invoke({
+                    "city": city,
+                    "month": month,
+                    "language": language,
+                    "budget":budget
+    })
     
     st.write(response.content)

@@ -11,7 +11,7 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 llm = ChatOpenAI(api_key=OPENAI_API_KEY, 
                  base_url="https://models.github.ai/inference",
-                model = "openai/gpt-4.1")
+                model = "openai/gpt-4o")
 
 question = input("Enter the question")
 
