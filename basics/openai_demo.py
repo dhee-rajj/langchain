@@ -3,7 +3,7 @@ from langchain_openai import ChatOpenAI
 from langchain.globals import set_debug
 import os
 
-load_dotenv()
+load_dotenv(dotenv_path="../.env")
 
 set_debug(True)
 
